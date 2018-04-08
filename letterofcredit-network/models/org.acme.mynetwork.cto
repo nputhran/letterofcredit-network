@@ -1,0 +1,134 @@
+/**
+ * Write your model definitions here
+ */
+
+namespace org.acme.mynetwork
+
+enum doctype{
+  o bill_of_lading
+  o salecontract
+  o deliveryconfirmation
+  o pythocertificate
+  o letterofcredit
+  o productfeedback
+}
+
+enum participanttype{
+  o buyer
+  o seller
+  o buyerbank
+  o sellerbank
+}
+
+participant buyer identified by buyerId {
+  o String buyerId
+  o String firstName
+  o String lastName
+}
+
+
+participant seller identified by sellerId {
+  o String sellerId
+  o String firstName
+  o String lastName
+}
+
+
+participant buyerbank identified by buyerbankId {
+  o String buyerbankId
+  o String bankname
+}
+
+
+participant sellerbank identified by sellerbankId {
+  o String sellerbankId
+  o String bankname
+}
+
+asset product identified by productId {
+  o String productId
+  o String state
+  --> seller owner
+  --> buyer finalowner	
+  o Integer quantity
+  o String productname
+  o String value
+}
+
+asset document identified by documentId{
+  o  String documentId
+  o  String name
+  o  String version
+  o  String status
+  o  doctype dtype
+  o  Boolean valid 
+  o  participanttype ptype  
+}
+
+asset loc identified by locId{
+  o String locId
+  o String terms
+  o String state
+  o Boolean validDoc
+  --> buyer buyer
+  --> buyerbank buyerbank
+  --> sellerbank sellerbank
+ 
+}
+
+transaction sentProduct {
+  --> product product
+  --> seller seller
+  --> buyer buyer
+  --> document document
+}
+
+transaction recievedProduct {
+  --> product product
+  --> seller seller
+  --> buyer buyer
+  --> loc loc
+  --> document document
+
+}
+
+transaction validateDoc {
+   --> loc loc
+   --> buyerbank buyerbank
+   --> sellerbank sellerbank
+   --> document document
+   --> seller seller
+   --> buyer buyer
+
+}
+
+transaction invalidateDoc {
+   --> loc loc
+   --> buyerbank buyerbank
+   --> sellerbank sellerbank
+   --> document document
+   --> seller seller
+   --> buyer buyer
+
+}
+
+transaction sentPayment
+{
+   --> buyerbank buyerbank
+   --> buyer buyer
+   --> loc loc
+   --> sellerbank sellerbank
+   --> seller seller
+   
+}
+transaction receivedPayment
+{
+   --> sellerbank sellerbankpayment
+   --> seller sellerpayment
+   --> loc loc
+   --> buyerbank buyerbankpayment
+   --> buyer buyerpayment 
+}
+
+
+
